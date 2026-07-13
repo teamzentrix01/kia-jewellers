@@ -1,0 +1,15 @@
+
+> backend@1.0.0 start
+> node server.js
+
+◇ injected env (7) from .env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+◇ injected env (0) from .env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+
+    ==================================================
+    🌟 ESSENTIAL MART BACKEND IS NOW LIVE 🌟
+    --------------------------------------------------
+    📡 Port: 5000
+    🔗 URL: http://localhost:5000
+    ✅ Ready for Frontend Connection
+    ==================================================
+    

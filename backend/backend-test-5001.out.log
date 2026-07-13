@@ -1,0 +1,12 @@
+◇ injected env (6) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+◇ injected env (0) from .env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+
+    ==================================================
+    🌟 ESSENTIAL MART BACKEND IS NOW LIVE 🌟
+    --------------------------------------------------
+    📡 Port: 5001
+    🔗 URL: http://localhost:5001
+    ✅ Ready for Frontend Connection
+    ==================================================
+    
+[0mGET /api/admin/stats [33m401[0m 2.420 ms - 45[0m
