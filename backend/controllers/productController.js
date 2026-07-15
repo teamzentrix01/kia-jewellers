@@ -37,7 +37,20 @@ const getProductById = async (req, res) => {
         const result = await pool.query('SELECT * FROM products WHERE id = $1', [parseInt(req.params.id)]);
         if (result.rows.length === 0)
             return res.status(404).json({ error: 'Product not found' });
-        res.json(formatProduct(result.rows[0]));
+        const itemResult = await pool.query(
+            `SELECT cp.quantity, p.*
+             FROM combo_products cp
+             JOIN products p ON p.id = cp.product_id
+             WHERE cp.combo_id = $1
+             ORDER BY p.id`,
+            [parseInt(req.params.id)]
+        );
+        const product = formatProduct(result.rows[0]);
+        res.json({
+            ...product,
+            isCombo: itemResult.rows.length > 0,
+            comboItems: itemResult.rows.map((row) => ({ ...formatProduct(row), quantity: row.quantity })),
+        });
     } catch (err) {
         console.error('GET /api/product-detail Error:', err);
         res.status(500).json({ error: 'Database error' });

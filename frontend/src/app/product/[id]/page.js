@@ -28,7 +28,8 @@ export default function ProductDetailPage() {
         const fetchProductDetail = async () => {
             try {
                 setLoading(true);
-                const res = await fetch(`http://localhost:5000/api/product-detail/${id}`);
+                const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+                const res = await fetch(`${apiBase}/product-detail/${id}`);
                 const data = await res.json();
                 setProduct(data);
                 const imgs = typeof data.images === 'string' ? JSON.parse(data.images || "[]") : (data.images || []);
@@ -173,7 +174,7 @@ export default function ProductDetailPage() {
 
                                 {/* Name */}
                                 <div className="border-b pb-4">
-                                    <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-1">{product.brand || "KEI FASHION"}</p>
+                                    <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-1">{product.isCombo ? "KIA GIFT COMBO" : (product.brand || "KIA Fashion")}</p>
                                     <h1 className="text-xl md:text-2xl font-light text-gray-800 tracking-tight leading-tight">{product.name}</h1>
                                 </div>
 
@@ -224,6 +225,21 @@ export default function ProductDetailPage() {
                                     <h3 className="text-xs font-bold uppercase tracking-widest text-gray-900 mb-3">Product Info</h3>
                                     <p className="text-sm text-gray-500 leading-relaxed">{product.full_description || product.short_description || "A timeless jewel, thoughtfully crafted to become part of your story."}</p>
                                 </div>
+
+                                {product.isCombo && product.comboItems?.length > 0 && (
+                                    <div className="pt-3 border-t border-gray-100">
+                                        <h3 className="text-xs font-bold uppercase tracking-widest text-gray-900 mb-3">This Combo Includes</h3>
+                                        <div className="space-y-2">
+                                            {product.comboItems.map((item) => (
+                                                <Link key={item.id} href={`/product/${item.id}`} className="grid grid-cols-[44px_1fr_auto] items-center gap-3 rounded border border-gray-100 p-2 transition hover:border-gray-300">
+                                                    <img src={item.images?.[0] || '/placeholder.jpg'} alt={item.name} className="h-11 w-11 object-cover" />
+                                                    <span className="min-w-0 truncate text-xs font-bold text-gray-700">{item.name}</span>
+                                                    <span className="text-xs font-bold text-gray-500">x{item.quantity}</span>
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
 
                                 {/* Review */}
                                 {product.reviewer_name && (

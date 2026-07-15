@@ -10,6 +10,7 @@ import {
   ClipboardList,
   LogOut,
   PackagePlus,
+  Gift,
   ShieldCheck,
   User,
   Users,
@@ -20,6 +21,7 @@ const navItems = [
   { href: "/admin/categories", label: "Categories", icon: LayoutGrid },
   { href: "/admin", label: "Dashboard", icon: BarChart3 },
   { href: "/admin/add-product", label: "Add Product", icon: PackagePlus },
+  { href: "/admin/add-combo", label: "Create Combo", icon: Gift },
   { href: "/admin/manage", label: "Products", icon: Boxes },
   { href: "/admin/orders", label: "Orders", icon: ClipboardList },
   { href: "/admin/customers", label: "Customers", icon: Users },
@@ -78,7 +80,7 @@ export default function AdminLayout({ children }) {
           <div className="mb-4 rounded-lg bg-stone-950 px-4 py-4 text-white">
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-amber-200">
               <ShieldCheck size={15} />
-              KIA Jewellers
+              KIA Fashion
             </div>
             <div className="mt-2 text-lg font-black">Admin Console</div>
           </div>

@@ -367,7 +367,7 @@ export default function AuthPage() {
           <img
             className="auth-left-img"
             src="https://i.pinimg.com/1200x/54/f6/da/54f6da4fac291ab1af9e8a952fd54216.jpg"
-            alt="KIA Jewellers"
+            alt="KIA Fashion"
           />
           <div className="auth-left-overlay" />
           <div className="auth-left-content">
@@ -442,7 +442,7 @@ export default function AuthPage() {
               <div className="auth-header">
                 <p className="auth-header-eyebrow">{mode === 'login' ? 'Welcome Back' : 'Join Us'}</p>
                 <h1>{mode === 'login' ? 'Sign in to your account' : 'Create an account'}</h1>
-                <p>{mode === 'login' ? 'Access your jewellery box, orders and wishlist.' : 'Join KIA Jewellers for private access to new collections and atelier offers.'}</p>
+                <p>{mode === 'login' ? 'Access your jewellery box, orders and wishlist.' : 'Join KIA Fashion for private access to new collections and atelier offers.'}</p>
               </div>
 
               {error && <div className="auth-error">{error}</div>}

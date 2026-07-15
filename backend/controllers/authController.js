@@ -127,7 +127,7 @@ const forgotPassword = async (req, res) => {
     const resetLink = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/reset-password?token=${token}`;
 
     await transporter.sendMail({
-      from: `"KIA Jewellers" <${process.env.EMAIL_USER}>`,
+      from: `"KIA Fashion" <${process.env.EMAIL_USER}>`,
       to: email,
       subject: 'Reset Your Password — KIA Fashion',
       html: `

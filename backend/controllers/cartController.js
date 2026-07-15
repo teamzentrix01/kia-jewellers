@@ -49,9 +49,21 @@ const addToCart = async (req, res) => {
 
     try {
         // Check product exists
-        const product = await pool.query('SELECT id, in_stock FROM products WHERE id = $1', [product_id]);
+        const product = await pool.query(
+            `SELECT p.id, p.in_stock,
+                    COALESCE(BOOL_AND(component.in_stock), true) AS components_in_stock
+             FROM products p
+             LEFT JOIN combo_products cp ON cp.combo_id = p.id
+             LEFT JOIN products component ON component.id = cp.product_id
+             WHERE p.id = $1
+             GROUP BY p.id, p.in_stock`,
+            [product_id]
+        );
         if (product.rows.length === 0) return res.status(404).json({ error: 'Product not found' });
         if (!product.rows[0].in_stock) return res.status(400).json({ error: 'Product is out of stock' });
+        if (!product.rows[0].components_in_stock) {
+            return res.status(400).json({ error: 'A product in this combo is out of stock' });
+        }
 
         // Insert or update quantity
         const result = await pool.query(

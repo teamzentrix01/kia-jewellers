@@ -4,7 +4,7 @@
 // import "./globals.css";
 
 // export const metadata = {
-//   title: "KIA Jewellers",
+//   title: "KIA Fashion",
 //   description: "Modern heirloom jewellery",
 // };
 
@@ -31,7 +31,7 @@ import { CartProvider } from "@/context/CartContext";
 import "./globals.css";
 
 export const metadata = {
-  title: "KIA Jewellers | Modern Heirlooms",
+  title: "KIA Fashion | Modern Heirlooms",
   description: "Fine jewellery shaped by Indian artistry.",
 };
 
