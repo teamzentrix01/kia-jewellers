@@ -63,9 +63,14 @@ export const CartProvider = ({ children }) => {
     // }
     // };
 
-    const clearCart = () => {
-    setItems([]); // Clear local cart state without another API request.
-};
+    const clearCart = async () => {
+        try {
+            await cartApi.clear();
+            setItems([]);
+        } catch (err) {
+            console.error(err.message);
+        }
+    };
 
     const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
     const totalPrice = items.reduce((sum, i) => sum + (i.product.discountedPrice * i.quantity), 0);

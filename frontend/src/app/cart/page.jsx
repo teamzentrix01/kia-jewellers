@@ -1,4 +1,5 @@
 'use client';
+/* eslint-disable react/no-unescaped-entities */
 import { useCart } from '@/context/CartContext';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -14,18 +15,18 @@ export default function CartPage() {
     );
 
     if (items.length === 0) return (
-        <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-gray-50">
+        <div className="store-shell min-h-screen flex flex-col items-center justify-center gap-4 bg-gray-50">
             <div className="text-6xl">🛒</div>
             <h2 className="text-2xl font-bold text-gray-700">Your cart is empty</h2>
             <p className="text-gray-500">Add items to your cart to see them here</p>
-            <Link href="/" className="mt-4 bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
+            <Link href="/" className="mt-4 bg-[#3d2d25] text-white px-8 py-3 rounded-full text-xs font-semibold uppercase tracking-widest hover:bg-[#a77b43] transition">
                 Continue Shopping
             </Link>
         </div>
     );
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="store-shell min-h-screen bg-gray-50">
             <div className="max-w-6xl mx-auto px-4 py-8">
                 <h1 className="text-2xl font-bold text-gray-800 mb-6">
                     My Cart <span className="text-gray-400 text-lg font-normal">({totalItems} items)</span>
@@ -35,9 +36,9 @@ export default function CartPage() {
                     {/* Cart Items */}
                     <div className="flex-1 space-y-4">
                         {items.map(({ cartId, quantity, product }) => (
-                            <div key={cartId} className="bg-white rounded-xl shadow-sm p-4 flex gap-4">
+                            <div key={cartId} className="cart-line bg-white rounded-xl shadow-sm p-4 flex gap-4">
                                 {/* Product Image */}
-                                <div className="w-28 h-28 flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden">
+                                <div className="cart-image w-28 h-28 flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden">
                                     {product.images?.[0] ? (
                                         <img
                                             src={product.images[0]}
@@ -73,7 +74,7 @@ export default function CartPage() {
                                     )}
 
                                     {/* Quantity + Remove */}
-                                    <div className="flex items-center gap-4 mt-3">
+                                    <div className="cart-actions flex items-center gap-4 mt-3">
                                         <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden">
                                             <button
                                                 onClick={() => quantity > 1 ? updateQuantity(cartId, quantity - 1) : removeItem(cartId)}
@@ -97,7 +98,7 @@ export default function CartPage() {
                                 </div>
 
                                 {/* Item Total */}
-                                <div className="text-right flex-shrink-0">
+                                <div className="cart-total text-right flex-shrink-0">
                                     <p className="font-bold text-gray-900">₹{(product.discountedPrice * quantity).toLocaleString()}</p>
                                 </div>
                             </div>

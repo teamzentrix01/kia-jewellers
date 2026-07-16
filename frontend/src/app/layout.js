@@ -28,6 +28,7 @@
 import Navbar from "@/components/Navbar";           // ✅ direct wapas
 import { ConditionalFooter } from "@/components/ConditionalLayout";
 import { CartProvider } from "@/context/CartContext";
+import CartDrawer from "@/components/CartDrawer";
 import "./globals.css";
 
 export const metadata = {
@@ -41,7 +42,8 @@ export default function RootLayout({ children }) {
       <body className="antialiased">
         <CartProvider>
           <Navbar />
-          <main className="pt-[104px]">
+          <CartDrawer />
+          <main className="pt-[90px]">
             {children}
           </main>
           <ConditionalFooter />               {/* ✅ sirf footer conditional */}

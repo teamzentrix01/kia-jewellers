@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ShoppingBag, Heart, Star, Share2, ChevronRight, Loader2, ShieldCheck, RotateCcw, X } from 'lucide-react';
+import { ShoppingBag, Heart, Star, Share2, ChevronRight, Loader2, ShieldCheck, RotateCcw, X, ZoomIn, MapPin, MessageCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 import { wishlistApi } from '@/lib/api';
@@ -23,17 +23,26 @@ export default function ProductDetailPage() {
     const [wishlistLoading, setWishlistLoading] = useState(false);
     const [showLoginModal, setShowLoginModal] = useState(false);
     const [pendingAction, setPendingAction] = useState(null);
+    const [zoomOpen, setZoomOpen] = useState(false);
+    const [pincode, setPincode] = useState('');
+    const [deliveryMessage, setDeliveryMessage] = useState('');
+    const [recentlyViewed, setRecentlyViewed] = useState([]);
 
     useEffect(() => {
         const fetchProductDetail = async () => {
             try {
                 setLoading(true);
-                const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-                const res = await fetch(`${apiBase}/product-detail/${id}`);
+                const res = await fetch(`http://localhost:5000/api/product-detail/${id}`);
                 const data = await res.json();
                 setProduct(data);
                 const imgs = typeof data.images === 'string' ? JSON.parse(data.images || "[]") : (data.images || []);
                 if (imgs.length > 0) setActiveImage(imgs[0]);
+                try {
+                    const previous = JSON.parse(localStorage.getItem('recentlyViewed') || '[]').filter(item => item.id !== data.id);
+                    const next = [{ id: data.id, name: data.name, image: imgs[0], price: Number(data.discounted_price || data.discountedPrice || 0) }, ...previous].slice(0, 6);
+                    localStorage.setItem('recentlyViewed', JSON.stringify(next));
+                    setRecentlyViewed(previous.slice(0, 4));
+                } catch { setRecentlyViewed([]); }
             } catch (err) {
                 console.error("Error:", err);
             } finally {
@@ -106,11 +115,11 @@ export default function ProductDetailPage() {
     const cartBtnClass = () => {
         if (!inStock) return 'bg-gray-300 text-gray-500 cursor-not-allowed';
         if (cartAdded) return 'bg-green-600 text-white';
-        return 'bg-black text-white hover:bg-zinc-800';
+        return 'bg-[#3c2b23] text-white hover:bg-[#a77b43]';
     };
 
     return (
-        <div className="min-h-screen bg-white pb-24 md:pb-10">
+        <div className="product-page min-h-screen bg-[#fbf7f0] pb-24 text-[#33261f] md:pb-10">
 
             <LoginModal
                 isOpen={showLoginModal}
@@ -118,9 +127,10 @@ export default function ProductDetailPage() {
                 onSuccess={handleLoginSuccess}
                 message={pendingAction === 'wishlist' ? 'Please sign in to use your wishlist.' : 'Please sign in to add this product to your cart.'}
             />
+            {zoomOpen && <div className="fixed inset-0 z-[300] grid place-items-center bg-[#1d1511]/90 p-4" onClick={() => setZoomOpen(false)}><button className="absolute right-5 top-5 grid h-11 w-11 place-items-center rounded-full bg-white text-[#352820]"><X size={20}/></button><img src={activeImage || allImages[0]} alt={product.name} className="max-h-[92vh] max-w-[92vw] object-contain" onClick={event => event.stopPropagation()}/></div>}
 
             {/* Breadcrumb */}
-            <div className="max-w-[1300px] mx-auto px-4 py-4 hidden md:block">
+            <div className="max-w-[1180px] mx-auto px-5 py-5 hidden md:block">
                 <nav className="flex items-center gap-2 text-[10px] text-gray-400 uppercase tracking-widest">
                     <Link href="/">Home</Link>
                     <ChevronRight size={10} />
@@ -131,21 +141,14 @@ export default function ProductDetailPage() {
             </div>
 
             {/* Main Content — with side related products on desktop */}
-            <div className="max-w-[1300px] mx-auto md:px-4">
+            <div className="max-w-[1180px] mx-auto md:px-5">
                 <div className="flex gap-8">
 
-                    {/* ── LEFT SIDE: Related Products (desktop only) ── */}
-                    <RelatedProducts
-                        category={category}
-                        currentProductId={Number(id)}
-                        layout="side"
-                    />
-
                     {/* ── CENTER: Product Detail ── */}
-                    <div className="flex-1 flex flex-col md:flex-row gap-6 lg:gap-10 min-w-0">
+                    <div className="flex-1 flex flex-col md:flex-row gap-7 lg:gap-12 min-w-0">
 
                         {/* Images */}
-                        <div className="w-full md:w-[55%] flex flex-col md:flex-row gap-3">
+                        <div className="w-full md:w-[56%] flex flex-col md:flex-row gap-3">
                             {/* Thumbnails */}
                             <div className="flex md:flex-col gap-2 order-2 md:order-1 overflow-x-auto md:overflow-y-auto no-scrollbar md:w-16 shrink-0 px-4 md:px-0">
                                 {allImages.map((img, idx) => (
@@ -157,8 +160,9 @@ export default function ProductDetailPage() {
                             </div>
 
                             {/* Main Image */}
-                            <div className="flex-1 order-1 md:order-2 aspect-[3/4] max-h-[520px] bg-gray-50 overflow-hidden relative flex items-center justify-center">
+                            <div className="flex-1 order-1 md:order-2 aspect-[4/5] max-h-[560px] bg-[#efe8de] overflow-hidden relative flex items-center justify-center rounded-t-[5rem] md:rounded-t-[7rem]">
                                 <img src={activeImage || allImages[0]} className="w-full h-full object-contain transition-opacity duration-500" alt={product.name} />
+                                <button onClick={() => setZoomOpen(true)} className="absolute bottom-4 right-4 grid h-10 w-10 place-items-center rounded-full bg-white/85 text-[#3d2d25] shadow"><ZoomIn size={17}/></button>
                                 <button onClick={() => router.back()} className="absolute top-4 left-4 p-2 bg-white/80 backdrop-blur rounded-full shadow-sm z-20 md:hidden">
                                     <X size={20} className="text-gray-800" />
                                 </button>
@@ -169,13 +173,13 @@ export default function ProductDetailPage() {
                         </div>
 
                         {/* Details */}
-                        <div className="w-full md:w-[45%] px-4 md:px-0 mt-4 md:mt-0">
+                        <div className="w-full md:w-[44%] px-5 md:px-0 mt-4 md:mt-0">
                             <div className="md:sticky md:top-24 space-y-5">
 
                                 {/* Name */}
                                 <div className="border-b pb-4">
-                                    <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-1">{product.isCombo ? "KIA GIFT COMBO" : (product.brand || "KIA Fashion")}</p>
-                                    <h1 className="text-xl md:text-2xl font-light text-gray-800 tracking-tight leading-tight">{product.name}</h1>
+                                    <p className="text-[9px] font-bold text-[#a77b43] uppercase tracking-[.28em] mb-2">{product.isCombo ? "KIA GIFT COMBO" : (product.brand || "KIA JEWELLERS")}</p>
+                                    <h1 className="font-serif text-2xl md:text-4xl font-light text-[#33261f] tracking-tight leading-[1.05]">{product.name}</h1>
                                 </div>
 
                                 {/* Rating */}
@@ -189,22 +193,28 @@ export default function ProductDetailPage() {
                                 {/* Price */}
                                 <div className="py-3">
                                     <div className="flex items-baseline gap-3">
-                                        <span className="text-3xl font-bold">₹{discountedPrice.toLocaleString()}</span>
+                                        <span className="font-serif text-3xl text-[#33261f]">₹{discountedPrice.toLocaleString()}</span>
                                         {originalPrice > discountedPrice && (
                                             <>
                                                 <span className="text-gray-400 line-through text-lg font-light">₹{originalPrice.toLocaleString()}</span>
-                                                <span className="text-orange-600 font-bold text-sm bg-orange-50 px-2 py-1 rounded">{discountPercent}% OFF</span>
+                                                <span className="text-[#8a6738] font-bold text-[9px] bg-[#eee1cb] px-2 py-1 rounded-full">{discountPercent}% OFF</span>
                                             </>
                                         )}
                                     </div>
-                                    <p className="text-[10px] text-green-600 font-bold mt-2 uppercase tracking-tighter">Tax included • Free Shipping</p>
+                                    <p className="text-[9px] text-[#8a735f] font-bold mt-2 uppercase tracking-[.16em]">Tax included · Complimentary insured shipping</p>
                                     {!inStock && <p className="text-[11px] text-red-500 font-bold mt-1 uppercase tracking-wider">⚠ Out of Stock</p>}
                                 </div>
 
                                 {/* Trust Badges */}
-                                <div className="grid grid-cols-1 gap-2 py-3 border-t border-gray-100">
+                                <div className="grid grid-cols-2 gap-2 py-4 border-y border-[#e5dacb]">
                                     <div className="flex gap-3 items-center text-[11px] text-gray-600 font-medium"><RotateCcw size={14} className="text-gray-400" /> 15 Days Easy Returns</div>
                                     <div className="flex gap-3 items-center text-[11px] text-gray-600 font-medium"><ShieldCheck size={14} className="text-gray-400" /> 100% Original Quality</div>
+                                </div>
+
+                                <div className="rounded-xl border border-[#e5dacb] bg-white/45 p-3">
+                                    <p className="mb-2 flex items-center gap-2 text-[9px] font-bold uppercase tracking-[.2em] text-[#795f4e]"><MapPin size={13}/> Check delivery</p>
+                                    <div className="flex gap-2"><input inputMode="numeric" maxLength={6} value={pincode} onChange={event => { setPincode(event.target.value.replace(/\D/g, '')); setDeliveryMessage(''); }} placeholder="6-digit pincode" className="min-w-0 flex-1 rounded-full border border-[#d8c9b7] bg-white px-4 py-2 text-xs outline-none"/><button onClick={() => setDeliveryMessage(pincode.length === 6 ? `Delivery expected in 4–6 business days to ${pincode}.` : 'Please enter a valid 6-digit pincode.')} className="rounded-full bg-[#3d2d25] px-4 text-[8px] font-bold uppercase tracking-widest text-white">Check</button></div>
+                                    {deliveryMessage && <p className="mt-2 text-[10px] text-[#7b675b]">{deliveryMessage}</p>}
                                 </div>
 
                                 {/* Desktop Buttons */}
@@ -215,16 +225,22 @@ export default function ProductDetailPage() {
                                         {cartBtnLabel()}
                                     </button>
                                     <button onClick={handleWishlist} disabled={wishlistLoading}
-                                        className={`flex-1 border py-4 text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 transition-all ${wishlisted ? 'border-red-400 bg-red-50 text-red-500' : 'border-gray-200 hover:border-black'}`}>
+                                        className={`flex-1 border py-4 text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 transition-all ${wishlisted ? 'border-[#b87572] bg-[#f7e8e4] text-[#a34f4b]' : 'border-[#cdbfae] hover:border-[#3c2b23]'}`}>
                                         <Heart size={18} fill={wishlisted ? 'currentColor' : 'none'} className={wishlisted ? 'text-red-500' : ''} />
                                     </button>
                                 </div>
 
                                 {/* Description */}
-                                <div className="pt-3 border-t border-gray-100">
-                                    <h3 className="text-xs font-bold uppercase tracking-widest text-gray-900 mb-3">Product Info</h3>
-                                    <p className="text-sm text-gray-500 leading-relaxed">{product.full_description || product.short_description || "A timeless jewel, thoughtfully crafted to become part of your story."}</p>
+                                <div className="rounded-xl border border-[#e5dacb] bg-white/45 p-4">
+                                    <h3 className="text-[9px] font-bold uppercase tracking-[.24em] text-[#8f6c3e] mb-3">The details</h3>
+                                    <p className="text-[13px] text-[#746158] leading-relaxed">{product.full_description || product.short_description || "A timeless jewel, thoughtfully crafted to become part of your story."}</p>
                                 </div>
+                                <div className="divide-y divide-[#e5dacb] border-y border-[#e5dacb]">
+                                  <details className="group py-3"><summary className="cursor-pointer list-none text-[9px] font-bold uppercase tracking-[.22em]">Materials & authenticity <span className="float-right">+</span></summary><p className="pt-3 text-xs leading-5 text-[#746158]">Hand-finished materials with a KIA authenticity certificate and quality inspection.</p></details>
+                                  <details className="group py-3"><summary className="cursor-pointer list-none text-[9px] font-bold uppercase tracking-[.22em]">Care guide <span className="float-right">+</span></summary><p className="pt-3 text-xs leading-5 text-[#746158]">Store separately, avoid moisture and perfume, and clean gently with a soft dry cloth.</p></details>
+                                  <details className="group py-3"><summary className="cursor-pointer list-none text-[9px] font-bold uppercase tracking-[.22em]">Shipping & returns <span className="float-right">+</span></summary><p className="pt-3 text-xs leading-5 text-[#746158]">Complimentary insured shipping and a simple 15-day exchange window.</p></details>
+                                </div>
+                                <a href={`https://wa.me/?text=${encodeURIComponent(`I would like a consultation for ${product.name}`)}`} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 rounded-full border border-[#cdbfae] py-3 text-[9px] font-bold uppercase tracking-widest"><MessageCircle size={14}/> WhatsApp consultation</a>
 
                                 {product.isCombo && product.comboItems?.length > 0 && (
                                     <div className="pt-3 border-t border-gray-100">
@@ -269,6 +285,7 @@ export default function ProductDetailPage() {
                         layout="bottom"
                     />
                 </div>
+                {recentlyViewed.length > 0 && <section className="border-t border-[#e5dacb] py-10"><div className="mb-5"><p className="section-kicker">Continue exploring</p><h2 className="font-serif text-2xl">Recently viewed</h2></div><div className="grid grid-cols-2 gap-3 md:grid-cols-4">{recentlyViewed.map(item => <Link href={`/product/${item.id}`} key={item.id} className="group"><div className="aspect-[4/5] overflow-hidden rounded-xl bg-[#eee7de]"><img src={item.image || '/placeholder.jpg'} alt={item.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-105"/></div><p className="mt-2 truncate font-serif text-sm">{item.name}</p><p className="mt-1 text-xs">₹{item.price.toLocaleString('en-IN')}</p></Link>)}</div></section>}
             </div>
 
             {/* Mobile Buttons */}

@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable react/no-unescaped-entities */
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -81,7 +82,7 @@ export default function AuthPage() {
   overflow: hidden;
   display: flex;                /* ✅ yeh missing tha! */
   font-family: 'Jost', sans-serif;
-  background: #0b0905;
+  background: #eee5d9;
   margin-top: -64px;
   padding-top: 64px;            /* ✅ content neeche dhakelo */
   box-sizing: border-box;
@@ -168,7 +169,7 @@ export default function AuthPage() {
           flex-direction: column;
           justify-content: center;
           padding: 32px 40px;
-          background: #0f0c08;
+          background: #fbf7f0;
           position: relative;
           overflow: hidden;
           box-sizing: border-box;
@@ -189,6 +190,7 @@ export default function AuthPage() {
           display: flex; flex-direction: column; gap: 4px;
           margin-bottom: 40px;
         }
+        .auth-mobile-logo .auth-logo-name { color: #352820 !important; }
         @media (min-width: 900px) { .auth-mobile-logo { display: none; } }
 
         /* ── FORM HEADER ── */
@@ -201,11 +203,11 @@ export default function AuthPage() {
         .auth-header h1 {
           font-family: 'Cormorant Garamond', serif;
           font-size: 2.4rem; font-weight: 300;
-          font-style: italic; color: #f5efe6;
+          font-style: italic; color: #352820;
           line-height: 1.1; margin: 0 0 12px;
         }
         .auth-header p {
-          font-size: 13px; color: rgba(255,255,255,0.35);
+          font-size: 13px; color: #806d62;
           line-height: 1.6; margin: 0;
         }
 
@@ -214,20 +216,20 @@ export default function AuthPage() {
         .auth-field label {
           display: block;
           font-size: 9px; letter-spacing: 0.3em;
-          text-transform: uppercase; color: rgba(255,255,255,0.4);
+          text-transform: uppercase; color: #8f7b6d;
           margin-bottom: 8px;
         }
         .auth-input-wrap { position: relative; }
         .auth-input {
           width: 100%; box-sizing: border-box;
-          background: rgba(255,255,255,0.04);
-          border: 1px solid rgba(255,255,255,0.1);
-          color: #f5efe6; font-family: 'Jost', sans-serif;
+          background: #fffdf9;
+          border: 1px solid #ded1c1;
+          color: #352820; font-family: 'Jost', sans-serif;
           font-size: 14px; padding: 12px 16px;
           outline: none; transition: border-color 0.25s, background 0.25s;
           border-radius: 2px;
         }
-        .auth-input::placeholder { color: rgba(255,255,255,0.2); }
+        .auth-input::placeholder { color: #b0a196; }
         .auth-input:focus {
           border-color: #c9a96e;
           background: rgba(201,169,110,0.05);
@@ -238,7 +240,7 @@ export default function AuthPage() {
           position: absolute; right: 14px; top: 50%;
           transform: translateY(-50%);
           background: none; border: none; cursor: pointer;
-          color: rgba(255,255,255,0.3); padding: 0;
+          color: #9b897d; padding: 0;
           display: flex; align-items: center;
           transition: color 0.2s;
         }
@@ -260,7 +262,7 @@ export default function AuthPage() {
         }
         .auth-forgot button {
           background: none; border: none; cursor: pointer;
-          font-size: 11px; color: rgba(255,255,255,0.3);
+          font-size: 11px; color: #88766b;
           font-family: 'Jost', sans-serif; letter-spacing: 0.05em;
           padding: 0; transition: color 0.2s;
         }
@@ -269,7 +271,7 @@ export default function AuthPage() {
         /* ── PRIMARY BUTTON ── */
         .auth-btn {
           width: 100%; padding: 13px;
-          background: #c9a96e; color: #0b0905;
+          background: #3d2d25; color: #fffaf2;
           font-family: 'Jost', sans-serif;
           font-size: 11px; font-weight: 600;
           letter-spacing: 0.35em; text-transform: uppercase;
@@ -278,7 +280,7 @@ export default function AuthPage() {
           display: flex; align-items: center; justify-content: center; gap: 8px;
           border-radius: 1px;
         }
-        .auth-btn:hover:not(:disabled) { background: #e2c485; }
+        .auth-btn:hover:not(:disabled) { background: #a77b43; }
         .auth-btn:active:not(:disabled) { transform: scale(0.99); }
         .auth-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
@@ -289,10 +291,10 @@ export default function AuthPage() {
         }
         .auth-divider span {
           flex: 1; height: 1px;
-          background: rgba(255,255,255,0.08);
+          background: #e3d8ca;
         }
         .auth-divider p {
-          font-size: 10px; color: rgba(255,255,255,0.2);
+          font-size: 10px; color: #9b897d;
           letter-spacing: 0.2em; text-transform: uppercase;
           margin: 0; white-space: nowrap;
         }
@@ -300,7 +302,7 @@ export default function AuthPage() {
         /* ── SWITCH ── */
         .auth-switch {
           text-align: center; font-size: 12px;
-          color: rgba(255,255,255,0.3);
+          color: #88766b;
         }
         .auth-switch button {
           background: none; border: none; cursor: pointer;
@@ -317,7 +319,7 @@ export default function AuthPage() {
           display: inline-flex; align-items: center; gap: 6px;
           background: none; border: none; cursor: pointer;
           font-family: 'Jost', sans-serif;
-          font-size: 11px; color: rgba(255,255,255,0.3);
+          font-size: 11px; color: #88766b;
           letter-spacing: 0.1em; padding: 0;
           margin-bottom: 32px; transition: color 0.2s;
         }
@@ -358,6 +360,16 @@ export default function AuthPage() {
           border-bottom: 1px solid rgba(201,169,110,0.3);
           border-right: 1px solid rgba(201,169,110,0.3);
         }
+        .auth-root { min-height: calc(100svh - 90px); height: auto; max-height: none; overflow-x: hidden; overflow-y: auto; margin-top: 0; padding-top: 0; }
+        .auth-right { min-height: calc(100svh - 90px); height: auto; }
+        .auth-sent h2 { color: #352820; }
+        .auth-sent p { color: #806d62; }
+        @media (max-width: 899px) {
+          .auth-right { max-width: none; padding: 34px 24px 48px; justify-content: flex-start; overflow: visible; }
+          .auth-mobile-logo { margin-bottom: 30px !important; }
+          .auth-header h1 { font-size: clamp(2rem, 10vw, 2.65rem); }
+          .auth-corner-tl, .auth-corner-br { width: 28px; height: 28px; }
+        }
       `}</style>
 
       <div className="auth-root">
@@ -366,8 +378,8 @@ export default function AuthPage() {
         <div className="auth-left">
           <img
             className="auth-left-img"
-            src="https://i.pinimg.com/1200x/54/f6/da/54f6da4fac291ab1af9e8a952fd54216.jpg"
-            alt="KIA Fashion"
+            src="https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=1400&q=90"
+            alt="KIA Jewellers"
           />
           <div className="auth-left-overlay" />
           <div className="auth-left-content">
@@ -375,12 +387,12 @@ export default function AuthPage() {
               <span className="auth-logo-name">KIA</span>
               <div className="auth-logo-line">
                 <div className="auth-logo-bar" />
-                <span className="auth-logo-sub">Jewels</span>
+                <span className="auth-logo-sub">Jewellers</span>
               </div>
             </div>
             <div className="auth-left-quote">
-              <blockquote>"Style is a way to say who you are without having to speak."</blockquote>
-              <p>— Rachel Zoe</p>
+              <blockquote>“Jewels hold the stories we never want to forget.”</blockquote>
+              <p>— KIA Atelier</p>
             </div>
           </div>
         </div>
@@ -395,7 +407,7 @@ export default function AuthPage() {
             <span className="auth-logo-name" style={{ color: '#f5efe6', fontFamily: "'Cormorant Garamond', serif", fontSize: '1.8rem', letterSpacing: '0.25em' }}>KIA</span>
             <div className="auth-logo-line">
               <div className="auth-logo-bar" />
-              <span className="auth-logo-sub">Jewels</span>
+              <span className="auth-logo-sub">Jewellers</span>
             </div>
           </div>
 
@@ -442,7 +454,7 @@ export default function AuthPage() {
               <div className="auth-header">
                 <p className="auth-header-eyebrow">{mode === 'login' ? 'Welcome Back' : 'Join Us'}</p>
                 <h1>{mode === 'login' ? 'Sign in to your account' : 'Create an account'}</h1>
-                <p>{mode === 'login' ? 'Access your jewellery box, orders and wishlist.' : 'Join KIA Fashion for private access to new collections and atelier offers.'}</p>
+                <p>{mode === 'login' ? 'Access your jewellery box, orders and wishlist.' : 'Join KIA Jewellers for private access to new collections and atelier offers.'}</p>
               </div>
 
               {error && <div className="auth-error">{error}</div>}

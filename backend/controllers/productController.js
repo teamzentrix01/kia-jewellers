@@ -3,7 +3,7 @@ const { formatProduct, slugify } = require('../helpers/productHelper');
 
 const getProducts = async (req, res) => {
     try {
-        const { category, subcategory, limit } = req.query;
+        const { category, subcategory, limit, search } = req.query;
         let query = 'SELECT * FROM products WHERE 1=1';
         const values = [];
 
@@ -15,6 +15,11 @@ const getProducts = async (req, res) => {
         if (subcategory && subcategory !== 'null' && subcategory !== 'undefined' && subcategory !== '') {
             values.push(subcategory.toLowerCase().trim());
             query += ` AND LOWER(sub_category) = $${values.length}`;
+        }
+
+        if (search && search.trim()) {
+            values.push(`%${search.trim()}%`);
+            query += ` AND (name ILIKE $${values.length} OR category ILIKE $${values.length} OR sub_category ILIKE $${values.length} OR short_description ILIKE $${values.length})`;
         }
 
         query += ' ORDER BY id DESC';

@@ -109,7 +109,7 @@ export default function Dashboard() {
     const initials = user?.name ? user.name.slice(0, 2).toUpperCase() : user?.email?.slice(0, 2).toUpperCase() || 'U';
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="store-shell min-h-screen bg-gray-50">
             <div className="max-w-6xl mx-auto px-4 py-8">
                 {/* Header */}
                 <div className="bg-white rounded-2xl shadow-sm p-6 mb-6 flex flex-col sm:flex-row items-center gap-4">
@@ -127,7 +127,7 @@ export default function Dashboard() {
                 </div>
 
                 {/* Stats Bar */}
-                <div className="grid grid-cols-3 gap-4 mb-6">
+                <div className="account-stats grid grid-cols-3 gap-4 mb-6">
                     {[
                         { label: 'Orders', value: orders.length, icon: '📦' },
                         { label: 'Wishlist', value: wishlist.length, icon: '❤️' },

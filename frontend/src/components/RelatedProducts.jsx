@@ -12,7 +12,6 @@ export default function RelatedProducts({ category, currentProductId, layout = '
 
     useEffect(() => {
         if (!category) return;
-        setLoading(true);
         fetch(`${BASE_URL}/products?category=${encodeURIComponent(category)}&limit=20`)
             .then(r => r.json())
             .then(data => {
