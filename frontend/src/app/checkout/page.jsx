@@ -92,7 +92,7 @@ export default function CheckoutPage() {
 
     // ── Success Screen ────────────────────────────────────
     if (ordered) return (
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+        <div className="store-shell min-h-screen bg-gray-50 flex items-center justify-center px-4">
             <div className="bg-white rounded-2xl shadow-sm p-10 max-w-md w-full text-center">
                 <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
                     <CheckCircle size={40} className="text-green-600" />
@@ -128,7 +128,7 @@ export default function CheckoutPage() {
     const selectedAddr = addresses.find(a => a.id === selectedAddress);
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="store-shell min-h-screen bg-gray-50">
             <div className="max-w-6xl mx-auto px-4 py-8">
 
                 {/* Breadcrumb */}

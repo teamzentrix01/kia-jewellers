@@ -1,5 +1,6 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { X, ShoppingBag, User, Lock, Mail, Eye, EyeOff } from 'lucide-react';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
@@ -13,7 +14,14 @@ export default function LoginModal({ isOpen, onClose, onSuccess, message = 'Logi
     const [loginForm, setLoginForm] = useState({ email: '', password: '' });
     const [signupForm, setSignupForm] = useState({ name: '', email: '', password: '' });
 
-    if (!isOpen) return null;
+    useEffect(() => {
+        if (!isOpen) return undefined;
+        const previousOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        return () => { document.body.style.overflow = previousOverflow; };
+    }, [isOpen]);
+
+    if (!isOpen || typeof document === 'undefined') return null;
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -65,25 +73,25 @@ export default function LoginModal({ isOpen, onClose, onSuccess, message = 'Logi
         }
     };
 
-    return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
+    return createPortal((
+        <div className="fixed inset-0 z-[400] flex items-center justify-center overflow-y-auto px-4 py-4">
             {/* Backdrop */}
             <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
 
             {/* Modal */}
-            <div className="relative bg-white w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden">
+            <div role="dialog" aria-modal="true" aria-labelledby="auth-modal-title" className="relative max-h-[calc(100svh-2rem)] w-full max-w-sm overflow-y-auto rounded-2xl border border-[#e3d7c8] bg-[#fffdf9] shadow-2xl">
 
                 {/* Top Banner */}
-                <div className="bg-black px-6 pt-6 pb-8 text-white relative">
-                    <button onClick={onClose} className="absolute top-4 right-4 text-white/60 hover:text-white transition">
+                <div className="relative bg-[#f0e6d9] px-6 pb-6 pt-6 text-[#352820]">
+                    <button onClick={onClose} aria-label="Close sign in" className="absolute right-4 top-4 text-[#8f7b6d] transition hover:text-[#352820]">
                         <X size={18} />
                     </button>
                     <div className="flex items-center gap-2 mb-2">
                         <ShoppingBag size={18} className="text-[#a68b6d]" />
-                        <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#a68b6d]">KEI FASHION</span>
+                        <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#9a7447]">KIA JEWELLERS</span>
                     </div>
-                    <h2 className="text-xl font-bold leading-tight">{message}</h2>
-                    <p className="text-white/50 text-xs mt-1">Login or Sign up? -Free </p>
+                    <h2 id="auth-modal-title" className="max-w-[18rem] font-serif text-2xl font-normal leading-tight">{message}</h2>
+                    <p className="mt-2 text-xs text-[#806d62]">Sign in or create an account to continue.</p>
                 </div>
 
                 {/* Tab switcher */}
@@ -98,7 +106,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess, message = 'Logi
                     ))}
                 </div>
 
-                <div className="p-6">
+                <div className="p-5 sm:p-6">
                     {error && (
                         <div className="mb-4 bg-red-50 border border-red-100 text-red-600 text-xs px-3 py-2 rounded-lg">
                             {error}
@@ -129,7 +137,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess, message = 'Logi
                                 </button>
                             </div>
                             <button type="submit" disabled={loading}
-                                className="w-full bg-black text-white py-3 rounded-lg text-xs font-black uppercase tracking-widest hover:bg-[#a68b6d] transition disabled:opacity-60">
+                                className="w-full bg-[#3d2d25] text-white py-3 rounded-full text-xs font-black uppercase tracking-widest hover:bg-[#a77b43] transition disabled:opacity-60">
                                 {loading ? 'Logging in...' : 'Login & Continue'}
                             </button>
                         </form>
@@ -167,7 +175,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess, message = 'Logi
                                 </button>
                             </div>
                             <button type="submit" disabled={loading}
-                                className="w-full bg-black text-white py-3 rounded-lg text-xs font-black uppercase tracking-widest hover:bg-[#a68b6d] transition disabled:opacity-60">
+                                className="w-full bg-[#3d2d25] text-white py-3 rounded-full text-xs font-black uppercase tracking-widest hover:bg-[#a77b43] transition disabled:opacity-60">
                                 {loading ? 'Creating account...' : 'Create Account & Continue'}
                             </button>
                         </form>
@@ -179,5 +187,5 @@ export default function LoginModal({ isOpen, onClose, onSuccess, message = 'Logi
                 </div>
             </div>
         </div>
-    );
+    ), document.body);
 }
