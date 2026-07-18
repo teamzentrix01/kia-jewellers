@@ -1,15 +1,13 @@
 'use client';
 import { useState, useRef } from 'react';
 import { Link, Upload, X, Image, Video, Eye } from 'lucide-react';
-
-// Upload to Cloudinary or convert to base64
-// Since we may not have Cloudinary, we'll use base64 for file uploads
-// and allow URL input for external images/videos
+import { adminFetch } from '@/app/admin/adminApi';
 
 export default function MediaUpload({ value, onChange, label = "Image", index = null, accept = "image/*,video/*" }) {
     const [tab, setTab] = useState('url'); // 'url' | 'upload'
     const [preview, setPreview] = useState(false);
     const [uploading, setUploading] = useState(false);
+    const [uploadError, setUploadError] = useState('');
     const fileRef = useRef(null);
 
     const isVideo = (src) => src && (src.includes('.mp4') || src.includes('.webm') || src.includes('.mov') || src.includes('video'));
@@ -19,16 +17,17 @@ export default function MediaUpload({ value, onChange, label = "Image", index = 
         if (!file) return;
 
         setUploading(true);
+        setUploadError('');
         try {
-            // Convert to base64
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                onChange(ev.target.result);
-                setUploading(false);
-            };
-            reader.readAsDataURL(file);
+            const body = new FormData();
+            body.append('file', file);
+            const uploaded = await adminFetch('/api/admin/uploads/media', { method: 'POST', body });
+            onChange(uploaded.url);
         } catch (err) {
             console.error('Upload error:', err);
+            setUploadError(err.message || 'Upload failed. Please try again.');
+            if (fileRef.current) fileRef.current.value = '';
+        } finally {
             setUploading(false);
         }
     };
@@ -42,6 +41,8 @@ export default function MediaUpload({ value, onChange, label = "Image", index = 
                     {label}{index !== null ? ` ${index + 1}` : ''}
                 </span>
             )}
+
+            {uploadError && <p className="text-xs font-semibold text-red-600">{uploadError}</p>}
 
             {/* Tab switcher */}
             <div className="flex gap-1 p-1 bg-stone-100 rounded-lg w-fit">

@@ -1,4 +1,5 @@
 const pool = require('../config/db');
+const { sendOrderEmails } = require('../services/orderEmailService');
 
 // POST /api/orders/place — user order place kare
 const placeOrder = async (req, res) => {
@@ -8,6 +9,21 @@ const placeOrder = async (req, res) => {
         return res.status(400).json({ error: 'Address, payment method aur cart items required hain' });
 
     try {
+        const customerResult = await pool.query(
+            'SELECT name, email, phone FROM users WHERE id = $1',
+            [req.user.id]
+        );
+        const addressResult = await pool.query(
+            `SELECT name, phone, pincode, locality, address, city, state
+             FROM addresses WHERE id = $1 AND user_id = $2`,
+            [address_id, req.user.id]
+        );
+
+        if (!customerResult.rows.length)
+            return res.status(404).json({ error: 'Customer not found' });
+        if (!addressResult.rows.length)
+            return res.status(400).json({ error: 'Invalid delivery address' });
+
         const cartResult = await pool.query(
             `SELECT c.quantity, p.discounted_price, p.name, p.id as product_id
              FROM cart c
@@ -38,10 +54,16 @@ const placeOrder = async (req, res) => {
 
         await pool.query('DELETE FROM cart WHERE user_id = $1', [req.user.id]);
 
+        const order = orderResult.rows[0];
+        const customer = customerResult.rows[0];
+        const address = addressResult.rows[0];
+        const emailStatus = await sendOrderEmails({ order, customer, address, items: productIds });
+
         res.status(201).json({
             success: true,
             message: 'Order place ho gaya!',
-            order: orderResult.rows[0],
+            order,
+            emailStatus,
         });
     } catch (err) {
         console.error('POST /api/orders Error:', err.message);

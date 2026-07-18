@@ -25,7 +25,7 @@
 //   );
 // }
 
-import Navbar from "@/components/Navbar";           // ✅ direct wapas
+import Navbar from "@/components/Navbar"; // ✅ direct wapas
 import { ConditionalFooter } from "@/components/ConditionalLayout";
 import { CartProvider } from "@/context/CartContext";
 import CartDrawer from "@/components/CartDrawer";
@@ -43,10 +43,10 @@ export default function RootLayout({ children }) {
         <CartProvider>
           <Navbar />
           <CartDrawer />
-          <main className="pt-[90px]">
+          <main className="min-h-[calc(100svh-90px)] w-full overflow-x-clip pt-[90px]">
             {children}
           </main>
-          <ConditionalFooter />               {/* ✅ sirf footer conditional */}
+          <ConditionalFooter /> {/* ✅ sirf footer conditional */}
         </CartProvider>
       </body>
     </html>

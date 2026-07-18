@@ -27,6 +27,7 @@ app.use('/api', require('./routes/authRoutes'));
 app.use('/api', require('./routes/productRoutes'));
 app.use('/api', require('./routes/comboRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
+app.use('/api/admin/uploads', require('./routes/uploadRoutes'));
 app.use('/api/cart', cartRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/orders', orderRoutes);
